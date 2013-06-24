@@ -54,6 +54,8 @@ public class BasicDetectionCraft {
         MinecraftForge.setBlockHarvestLevel(blockDetector, "pickaxe", 3);
         GameRegistry.registerBlock(blockDetector, "Detector");
         GameRegistry.registerTileEntity(TileDetector.class, "containerDetector");
+        
+        
         NetworkRegistry.instance().registerGuiHandler(this, new GuiHandler());
 	}
 	

@@ -10,24 +10,21 @@ import cpw.mods.fml.common.network.IGuiHandler;
 public class GuiHandler implements IGuiHandler {
     //returns an instance of the Container you made earlier
     @Override
-    public Object getServerGuiElement(int id, EntityPlayer player, World world,
-                    int x, int y, int z) {
-            TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-            if(tileEntity instanceof TileDetector){
-                    return new ContainerDetector(player.inventory, (TileDetector) tileEntity);
-            }
-            return null;
+    public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
+    	TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+    	if(tileEntity instanceof TileDetector){
+    		return new ContainerDetector(player.inventory, (TileDetector) tileEntity);
+    	}
+    	return null;
     }
 
     //returns an instance of the Gui you made earlier
     @Override
-    public Object getClientGuiElement(int id, EntityPlayer player, World world,
-                    int x, int y, int z) {
-            TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-            if(tileEntity instanceof TileDetector){
-                    return new GuiDetector(player.inventory, (TileDetector) tileEntity);
-            }
-            return null;
-
+    public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
+    	TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+    	if(tileEntity instanceof TileDetector){
+    		return new GuiDetector(player.inventory, (TileDetector) tileEntity);
+    	}
+    	return null;
     }
 }

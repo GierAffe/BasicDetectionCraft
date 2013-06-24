@@ -57,6 +57,7 @@ public class BlockDetector extends BlockContainer {
         		//[AdvancedMachinesClient.sideAndFacingToSpriteOffset[blockSide][facing]];
     }
 	
+	
 	@Override
 	@SideOnly(Side.CLIENT)
     public Icon getIcon(int blockSide, int blockMeta) {
