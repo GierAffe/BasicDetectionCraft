@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 
 public class ContainerDetector extends Container {
 
+	/** containers entity / inventory */
 	private final IInventory inventory;
 
     public ContainerDetector (InventoryPlayer par1InventoryPlayer, IInventory par2Inventory) {
