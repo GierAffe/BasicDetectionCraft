@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
 public class ContainerDetector extends Container {
 
@@ -16,10 +17,10 @@ public class ContainerDetector extends Container {
     	this.tiledetector = tile;
     	this.playerIInventory = inventoryPlayer;
     	
-      /*addSlotToContainer(new Slot(tiledetector, 0, 18, 89));
+        addSlotToContainer(new Slot(tiledetector, 0, 18, 89));
     	addSlotToContainer(new Slot(tiledetector, 1, 42, 89));
     	addSlotToContainer(new Slot(tiledetector, 2, 66, 89));
-    	addSlotToContainer(new Slot(tiledetector, 3, 90, 89));*/
+    	addSlotToContainer(new Slot(tiledetector, 3, 90, 89));
 
     	/** players toolbar inventory (1x9) */
     	for (int i = 0; i < 9; i++) {
@@ -38,7 +39,6 @@ public class ContainerDetector extends Container {
             return this.tiledetector.isUseableByPlayer(player);
     }
 
-/*
     public ItemStack transferStackInSlot(EntityPlayer player, int i)
     {
         ItemStack itemstack = null;
@@ -50,10 +50,10 @@ public class ContainerDetector extends Container {
             itemstack = itemstack1.copy();
 
             if (i < this.tiledetector.getSizeInventory())	{	// tileentity -> inventory
-                if (!this.mergeItemStack(itemstack1, 0, this.inventorySlots.size(), true)) {
+                if (!this.mergeItemStack(itemstack1, this.tiledetector.getSizeInventory(), this.inventorySlots.size(), true)) {
                     return null;
                 }
-            } else if (!this.mergeItemStack(itemstack1, 0, this.tiledetector.getSizeInventory(), false))
+            } else if (!this.mergeItemStack(itemstack1, 0, this.tiledetector.getSizeInventory(), false))	// inventory -> tileentity
                 return null;
 
             if (itemstack1.stackSize == 0)
@@ -63,5 +63,5 @@ public class ContainerDetector extends Container {
         }
 
         return itemstack;
-    }/*/
+    }
 }

@@ -22,34 +22,6 @@ public class TileDetector extends TileEntity implements IInventory {
     	return false;
     }
 	
-
-	@Override
-	public ItemStack getStackInSlot(int i) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public ItemStack decrStackSize(int i, int j) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public ItemStack getStackInSlotOnClosing(int i) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack) {
-		// TODO Auto-generated method stub
-		
-	}
-    
 	
     /** returns the number of slots in the inventory */
 	@Override
@@ -61,14 +33,13 @@ public class TileDetector extends TileEntity implements IInventory {
 	/*
 	 * ItemStack handling
 	 */
-	/*
 	@Override
 	public ItemStack getStackInSlot(int i) {
 		return this.detectorItemStacks[i];
-	}*/
+	}
 
 	/** i = slot, j = size */
-	/*@Override
+	@Override
 	public ItemStack decrStackSize(int i, int j) {
 		if (this.detectorItemStacks[i] != null) {
             ItemStack itemstack;
@@ -109,7 +80,6 @@ public class TileDetector extends TileEntity implements IInventory {
         if (itemstack != null && itemstack.stackSize > this.getInventoryStackLimit())
         	itemstack.stackSize = this.getInventoryStackLimit();		
 	}
-	*/
 
 	/**
 	 * IventoryName stuff
