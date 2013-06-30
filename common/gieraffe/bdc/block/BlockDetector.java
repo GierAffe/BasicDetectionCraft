@@ -9,9 +9,12 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -49,39 +52,77 @@ public class BlockDetector extends BlockContainer {
 	@SideOnly(Side.CLIENT)
     public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int blockSide)
     {
-        //TileEntity te = world.getBlockTileEntity(x, y, z);
+        //top or bottom texture
+		if (blockSide == 0 || blockSide == 1)
+			return iconBuffer[blockSide];
+		
+		TileEntity tile = world.getBlockTileEntity(x, y, z);
+        byte facing = ((TileDetector) tile).getFacing();
         
-        //int facing = (te instanceof TileEntityBlock) ? ((int) (((TileEntityBlock)te).getFacing())) : 0;
-       
-        return iconBuffer[blockSide];
-        		//[AdvancedMachinesClient.sideAndFacingToSpriteOffset[blockSide][facing]];
+        if (blockSide == facing) return iconBuffer[3];
+        
+        return iconBuffer[2];
     }
 	
 	
 	@Override
 	@SideOnly(Side.CLIENT)
     public Icon getIcon(int blockSide, int blockMeta) {
-		if (blockSide < 5)
+		if (blockSide <= 5)
 			return iconBuffer[blockSide];
 		
 		return null;
-    }
+	}
 
-	 @Override
-     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int idk, float what, float these, float are) {
-             TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-             if (tileEntity == null || player.isSneaking()) {
-                     return false;
-             }
-             
-             player.openGui(BasicDetectionCraft.instance, 0, world, x, y, z);
-             return true;
-     }
+	@Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int idk, float what, float these, float are) {
+            TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+            if (tileEntity == null || player.isSneaking()) {
+                    return false;
+            }
+            
+            player.openGui(BasicDetectionCraft.instance, 0, world, x, y, z);
+            return true;
+    }
+	
+	@Override
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack) {
+		/* get block orientation */
+		byte blockFacing = 0;
+		int facing = MathHelper.floor_double((double) ((entityLiving.rotationYaw * 4F) / 360F) + 0.5D) & 3;
+		if (facing == 0) 		// south
+		{
+			blockFacing = 2;
+        } 
+		if (facing == 1) 		// west
+		{
+			blockFacing = 5;
+        }
+        if (facing == 2)		// north
+        {
+        	blockFacing = 3;
+        }
+        if (facing == 3)		// east
+        {
+        	blockFacing = 4;
+        }
+		
+        //world.setBlockMetadataWithNotify(x, y, z, blockFacing.getOpposite().ordinal(),1);
+        
+		/* save block orientation */
+		TileEntity tile = world.getBlockTileEntity(x, y, z);
+		if (tile != null & (tile instanceof TileDetector)) {
+			((TileDetector) tile).setFacing(blockFacing);
+		}
+	}
 
 	@Override
 	public TileEntity createNewTileEntity(World world) {
 		return new TileDetector();
     }
-
-
 }
+
+
+
+
+	
