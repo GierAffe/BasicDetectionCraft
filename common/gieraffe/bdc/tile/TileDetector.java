@@ -14,26 +14,61 @@ public class TileDetector extends TileEntity implements IInventory {
 	
 	private String inventoryName;
 	   
+	@Override
     public boolean isUseableByPlayer(EntityPlayer player) {
     	/** same as in minecraft source */
     	if (this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord, this.zCoord) == this)
     			return player.getDistanceSq((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D) <= 64.0D;
     	return false;
     }
+	
 
+	@Override
+	public ItemStack getStackInSlot(int i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public ItemStack decrStackSize(int i, int j) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public ItemStack getStackInSlotOnClosing(int i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void setInventorySlotContents(int i, ItemStack itemstack) {
+		// TODO Auto-generated method stub
+		
+	}
+    
+	
     /** returns the number of slots in the inventory */
+	@Override
 	public int getSizeInventory() {
 		return this.detectorItemStacks.length;
 	}
-
+	
 
 	/*
 	 * ItemStack handling
 	 */
+	/*
+	@Override
 	public ItemStack getStackInSlot(int i) {
 		return this.detectorItemStacks[i];
-	}
+	}*/
 
+	/** i = slot, j = size */
+	/*@Override
 	public ItemStack decrStackSize(int i, int j) {
 		if (this.detectorItemStacks[i] != null) {
             ItemStack itemstack;
@@ -55,7 +90,8 @@ public class TileDetector extends TileEntity implements IInventory {
         else
         	return null;
 	}
-
+	
+	@Override
 	public ItemStack getStackInSlotOnClosing(int i) {
 		if (this.detectorItemStacks[i] != null) {
             ItemStack itemstack = this.detectorItemStacks[i];
@@ -66,12 +102,14 @@ public class TileDetector extends TileEntity implements IInventory {
             return null;
 	}
 
+	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack) {
 		this.detectorItemStacks[i] = itemstack;
 
         if (itemstack != null && itemstack.stackSize > this.getInventoryStackLimit())
         	itemstack.stackSize = this.getInventoryStackLimit();		
 	}
+	*/
 
 	/**
 	 * IventoryName stuff
@@ -88,24 +126,24 @@ public class TileDetector extends TileEntity implements IInventory {
     {
         this.inventoryName = par1Str;
     }
-	
+
 	public void func_94047_a(String par1Str)
     {
         this.inventoryName = par1Str;
     }
 	
-	/**
-     * Returns the maximum stack size for a inventory slot. Seems to always be 64, possibly will be extended. *Isn't
-     * this more of a set than a get?*  
-     */
+	
+	@Override
 	public int getInventoryStackLimit() {
 		return 64;
 	}
 
+	@Override
 	public void openChest() {}
 
+	@Override
 	public void closeChest() {}
-
+	
 	@Override
 	public boolean isStackValidForSlot(int i, ItemStack itemstack) {
 		return true;
@@ -114,6 +152,7 @@ public class TileDetector extends TileEntity implements IInventory {
 	/**
 	 * NBT data handling routines
 	 */
+	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
 		NBTTagList nbtTagList = new NBTTagList();
@@ -135,6 +174,7 @@ public class TileDetector extends TileEntity implements IInventory {
 	        nbt.setString("CustomName", this.inventoryName);
 	}
 	
+	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         NBTTagList nbtTagList = nbt.getTagList("Items");
@@ -153,8 +193,6 @@ public class TileDetector extends TileEntity implements IInventory {
                 this.detectorItemStacks[b0] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
         }
     }
-	
-	
 }
 
 

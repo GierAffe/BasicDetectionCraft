@@ -14,31 +14,25 @@ public class GuiDetector extends GuiContainer {
 	
 	private TileDetector tileEntity;
 	private GuiTextField guitextfield;
+	
+	private static final int GUI_X_SIZE = 255;
+	private static final int GUI_Y_SIZE = 200;
 
     public GuiDetector (InventoryPlayer par1inventoryPlayer, TileDetector par2tileEntity) 
     {
         super(new ContainerDetector(par1inventoryPlayer, par2tileEntity));
 
         this.tileEntity = par2tileEntity;
-        
-        this.xSize = 255;		//inventory horizontal size
-        this.ySize = 200;		//inventory vertical size
-        this.guiLeft = (width - xSize) / 2;		
-        this.guiTop = (height - ySize) / 2;
-
-
     }
     
     public void initGui() {
-        this.guiLeft = (width - xSize) / 2;		
-        this.guiTop = (height - ySize) / 2;
+    	/** set Gui size & initialize */
+        this.xSize = GuiDetector.GUI_X_SIZE;
+        this.ySize = GuiDetector.GUI_Y_SIZE;
+        super.initGui();
     	
-        this.guitextfield = new GuiTextField(mc.fontRenderer, this.guiLeft + 17, this.guiTop + 22, 200, 83);
-        //this.guitextfield.setFocused(true);
-        //this.guitextfield.setEnabled(true);
-        //this.guitextfield.setVisible(true);
+        this.guitextfield = new GuiTextField(mc.fontRenderer, this.guiLeft + 17, this.guiTop + 22, 200, 43);
         this.guitextfield.setMaxStringLength(70);
-        //this.guitextfield.moveCursorBy(par1)
     }
 
     public void drawScreen(int par1, int par2, float par3) {
@@ -62,11 +56,15 @@ public class GuiDetector extends GuiContainer {
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture("/mods/basicdetectioncraft/gui/detector.png");
-
-        this.guiLeft = (width - xSize) / 2;		
-        this.guiTop = (height - ySize) / 2;
         
-        this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+        // main gui
+        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, 255, 200);
+        
+        //slots
+        this.drawTexturedModalRect(this.guiLeft + 16, this.guiTop + 87, 237, 237, 19, 19);
+        this.drawTexturedModalRect(this.guiLeft + 40, this.guiTop + 87, 237, 237, 19, 19);
+        this.drawTexturedModalRect(this.guiLeft + 64, this.guiTop + 87, 237, 237, 19, 19);
+        this.drawTexturedModalRect(this.guiLeft + 88, this.guiTop + 87, 237, 237, 19, 19);
     }
 
     @Override

@@ -1,39 +1,29 @@
 package gieraffe.bdc.container;
 
+import gieraffe.bdc.tile.TileDetector;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
 
 public class ContainerDetector extends Container {
 
-	/** containers entity / inventory */
-	private final IInventory inventory;
+	/** containers tile / inventory */
+	TileDetector tiledetector;
+	IInventory playerIInventory;
 
-    public ContainerDetector (InventoryPlayer par1InventoryPlayer, IInventory par2Inventory) {
-    	this.inventory = par2Inventory;
+    public ContainerDetector (IInventory inventoryPlayer, TileDetector tile) {
+    	this.tiledetector = tile;
+    	this.playerIInventory = inventoryPlayer;
+    	
+      /*addSlotToContainer(new Slot(tiledetector, 0, 18, 89));
+    	addSlotToContainer(new Slot(tiledetector, 1, 42, 89));
+    	addSlotToContainer(new Slot(tiledetector, 2, 66, 89));
+    	addSlotToContainer(new Slot(tiledetector, 3, 90, 89));*/
 
-    	bindUpgradeSlots();
-        bindPlayerInventory(par1InventoryPlayer); 
-    }
-
-    public boolean canInteractWith(EntityPlayer player) {
-            return this.inventory.isUseableByPlayer(player);
-    }
-
-    protected void bindUpgradeSlots() {
-    	addSlotToContainer(new Slot(inventory, 0, 222, 22));
-    	addSlotToContainer(new Slot(inventory, 1, 222, 40));
-    	addSlotToContainer(new Slot(inventory, 2, 222, 58));
-    	addSlotToContainer(new Slot(inventory, 3, 222, 76));
-    }
-
-    protected void bindPlayerInventory(InventoryPlayer inventoryPlayer) {    	
     	/** players toolbar inventory (1x9) */
     	for (int i = 0; i < 9; i++) {
-    		addSlotToContainer(new Slot(inventoryPlayer, i, 49 + i * 18, 178));	// slot 1-9
+    		addSlotToContainer(new Slot(inventoryPlayer, i, 49 + i * 18, 178));
     	}
     	/** players 'inner' inventory (3x9) */
     	for (int i = 0; i < 3; i++) {
@@ -42,8 +32,13 @@ public class ContainerDetector extends Container {
     		}
     	}
     }
-    
 
+    @Override
+    public boolean canInteractWith(EntityPlayer player) {
+            return this.tiledetector.isUseableByPlayer(player);
+    }
+
+/*
     public ItemStack transferStackInSlot(EntityPlayer player, int i)
     {
         ItemStack itemstack = null;
@@ -54,11 +49,11 @@ public class ContainerDetector extends Container {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
 
-            if (i < this.inventory.getSizeInventory())	{	// 4 = number of rows
-                if (!this.mergeItemStack(itemstack1, this.inventory.getSizeInventory(), this.inventorySlots.size(), true)) {
+            if (i < this.tiledetector.getSizeInventory())	{	// tileentity -> inventory
+                if (!this.mergeItemStack(itemstack1, 0, this.inventorySlots.size(), true)) {
                     return null;
                 }
-            } else if (!this.mergeItemStack(itemstack1, 0, this.inventory.getSizeInventory(), false))
+            } else if (!this.mergeItemStack(itemstack1, 0, this.tiledetector.getSizeInventory(), false))
                 return null;
 
             if (itemstack1.stackSize == 0)
@@ -68,5 +63,5 @@ public class ContainerDetector extends Container {
         }
 
         return itemstack;
-    }
+    }/*/
 }
