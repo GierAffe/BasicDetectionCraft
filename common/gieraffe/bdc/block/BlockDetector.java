@@ -10,8 +10,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
@@ -47,21 +49,6 @@ public class BlockDetector extends BlockContainer {
 
 	}
 	
-	/*@Override
-	@SideOnly(Side.CLIENT)
-    public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int blockSide)
-    {
-        //top or bottom texture
-		if (blockSide == 0 || blockSide == 1)
-			return iconBuffer[blockSid/*e];
-		
-		int facing = world.getBlockMetadata(x, y, z);
-		
-		if (blockSide == facing) return iconBuffer[3];
-        
-        return iconBuffer[2];
-    }*/
-	
 	/**
 	 * getIcon() gets invoked by block.getBlockTexture
 	 * blockSide is the side that gets displayed
@@ -85,7 +72,6 @@ public class BlockDetector extends BlockContainer {
 		
 		// sides
 		return iconBuffer[2];
-		
 	}
 
 	@Override
@@ -117,6 +103,50 @@ public class BlockDetector extends BlockContainer {
 		
         world.setBlockMetadataWithNotify(x, y, z, blockFacing, 1);
 	}
+	
+	
+	@Override
+	public void breakBlock(World world, int x, int y, int z, int par5, int par6)		//analog minecraft blockHopper
+    {
+        TileDetector tile = (TileDetector)world.getBlockTileEntity(x, y, z);
+
+        if (tile != null)
+        {
+            for (int i = 0; i < tile.getSizeInventory(); ++i)	//iterate through 
+            {
+                ItemStack itemstack = tile.getStackInSlot(i);
+
+                if (itemstack != null) {
+                    float f = world.rand.nextFloat() * 0.8F + 0.1F;
+                    float f1 = world.rand.nextFloat() * 0.8F + 0.1F;
+                    float f2 = world.rand.nextFloat() * 0.8F + 0.1F;
+                    
+                    while (itemstack.stackSize > 0)
+                    {
+                    	/* size of stack dropped this iteration */
+                        int k1 = world.rand.nextInt(21) + 10;
+                        if (k1 > itemstack.stackSize) 	k1 = itemstack.stackSize;
+                        itemstack.stackSize -= k1;
+                        
+                        EntityItem entityitem = new EntityItem(world, (double)((float)x + f), (double)((float)y + f1), (double)((float)z + f2),
+                        										new ItemStack(itemstack.itemID, k1, itemstack.getItemDamage()));
+
+                        if (itemstack.hasTagCompound())
+                        {
+                            entityitem.getEntityItem().setTagCompound((NBTTagCompound)itemstack.getTagCompound().copy());
+                        }
+
+                        float f3 = 0.1F;
+                        entityitem.motionX = (double)((float)world.rand.nextGaussian() * f3);
+                        entityitem.motionY = (double)((float)world.rand.nextGaussian() * f3 + 0.2F);
+                        entityitem.motionZ = (double)((float)world.rand.nextGaussian() * f3);
+                        world.spawnEntityInWorld(entityitem);
+                    }
+                }
+            }
+        }
+        super.breakBlock(world, x, y, z, par5, par6);
+    }
 
 	@Override
 	public TileEntity createNewTileEntity(World world) {
