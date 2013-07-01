@@ -13,8 +13,6 @@ public class TileDetector extends TileEntity implements IInventory {
 	private ItemStack[] detectorItemStacks = new ItemStack[4];
 	
 	private String inventoryName;
-	
-	private byte facing = 0;
 	   
 	@Override
     public boolean isUseableByPlayer(EntityPlayer player) {
@@ -144,9 +142,6 @@ public class TileDetector extends TileEntity implements IInventory {
 
 	    if (this.isInvNameLocalized())
 	        nbt.setString("CustomName", this.inventoryName);
-	    
-	    if (facing != 0)
-	    	nbt.setByte("facing", this.facing);
 	}
 	
 	@Override
@@ -158,9 +153,6 @@ public class TileDetector extends TileEntity implements IInventory {
 
         if (nbt.hasKey("CustomName"))
             this.inventoryName = nbt.getString("CustomName");
-        
-        if (nbt.hasKey("facing"))
-        	this.facing = nbt.getByte("facing");
 
         for (int i = 0; i < nbtTagList.tagCount(); ++i)
         {
@@ -171,14 +163,6 @@ public class TileDetector extends TileEntity implements IInventory {
                 this.detectorItemStacks[b0] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
         }
     }
-	
-	public void setFacing(byte par1) {
-		this.facing = par1;
-	}
-	
-	public byte getFacing() {
-		return this.facing;
-	}
 }
 
 

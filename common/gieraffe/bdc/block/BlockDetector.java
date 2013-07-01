@@ -15,7 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockDetector extends BlockContainer {
@@ -48,30 +47,45 @@ public class BlockDetector extends BlockContainer {
 
 	}
 	
-	@Override
+	/*@Override
 	@SideOnly(Side.CLIENT)
     public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int blockSide)
     {
         //top or bottom texture
 		if (blockSide == 0 || blockSide == 1)
-			return iconBuffer[blockSide];
+			return iconBuffer[blockSid/*e];
 		
-		TileEntity tile = world.getBlockTileEntity(x, y, z);
-        byte facing = ((TileDetector) tile).getFacing();
-        
-        if (blockSide == facing) return iconBuffer[3];
+		int facing = world.getBlockMetadata(x, y, z);
+		
+		if (blockSide == facing) return iconBuffer[3];
         
         return iconBuffer[2];
-    }
+    }*/
 	
-	
+	/**
+	 * getIcon() gets invoked by block.getBlockTexture
+	 * blockSide is the side that gets displayed
+	 * blockFacing is the block Metadata
+	 */
 	@Override
 	@SideOnly(Side.CLIENT)
-    public Icon getIcon(int blockSide, int blockMeta) {
-		if (blockSide <= 5)
-			return iconBuffer[blockSide];
+    public Icon getIcon(int blockSide, int blockFacing) {
 		
-		return null;
+		// no meta set -> front icon display
+		if (blockFacing == 0 && blockSide == 3) return iconBuffer[3];
+		
+		// bottom side
+		if (blockSide == 0)	return iconBuffer[0];
+		
+		// top side
+		if (blockSide == 1) return iconBuffer[1];
+		
+		// front side
+		if (blockSide == blockFacing) return iconBuffer[3];
+		
+		// sides
+		return iconBuffer[2];
+		
 	}
 
 	@Override
@@ -88,32 +102,20 @@ public class BlockDetector extends BlockContainer {
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack) {
 		/* get block orientation */
-		byte blockFacing = 0;
+		int blockFacing = 0;
 		int facing = MathHelper.floor_double((double) ((entityLiving.rotationYaw * 4F) / 360F) + 0.5D) & 3;
-		if (facing == 0) 		// south
-		{
-			blockFacing = 2;
-        } 
-		if (facing == 1) 		// west
-		{
-			blockFacing = 5;
-        }
-        if (facing == 2)		// north
-        {
-        	blockFacing = 3;
-        }
-        if (facing == 3)		// east
-        {
-        	blockFacing = 4;
+		
+		if (facing == 0) { 				
+			blockFacing = 2;		// south
+        } else if (facing == 1) {		
+			blockFacing = 5;		// west
+        } else if (facing == 2) {		
+        	blockFacing = 3;		// north
+        } else if (facing == 3) {		
+        	blockFacing = 4;		// east
         }
 		
-        //world.setBlockMetadataWithNotify(x, y, z, blockFacing.getOpposite().ordinal(),1);
-        
-		/* save block orientation */
-		TileEntity tile = world.getBlockTileEntity(x, y, z);
-		if (tile != null & (tile instanceof TileDetector)) {
-			((TileDetector) tile).setFacing(blockFacing);
-		}
+        world.setBlockMetadataWithNotify(x, y, z, blockFacing, 1);
 	}
 
 	@Override
