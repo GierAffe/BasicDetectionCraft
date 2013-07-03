@@ -1,12 +1,17 @@
 package gieraffe.bdc.gui;
 
 import gieraffe.bdc.container.ContainerDetector;
+import gieraffe.bdc.lib.Channels;
+import gieraffe.bdc.lib.PackageData;
+import gieraffe.bdc.network.CreateBDCPackage;
 import gieraffe.bdc.tile.TileDetector;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.common.network.PacketDispatcher;
 
 
 
@@ -64,11 +69,19 @@ public class GuiDetector extends GuiContainer {
     protected void actionPerformed(GuiButton button) {
     	switch(button.id) {
         case 1:
-                break;
+        	buttonPowerClicked(button.id);
+            break;
         case 2:
         }
         //Packet code here
         //PacketDispatcher.sendPacketToServer(new Packet250CustomPayload(Channels.CHANNEL_DETECTOR_SERVER,  )); //send packet
+    }
+    
+    public void buttonPowerClicked(int ID) {
+    	int[] data = { PackageData.BUTTON_DETECTOR_CLICKED };
+    	CreateBDCPackage packet = new CreateBDCPackage(Channels.CHANNEL_DETECTOR_SERVER, ID, this.tileEntity.xCoord, 
+    													this.tileEntity.yCoord, this.tileEntity.zCoord, data);
+    	PacketDispatcher.sendPacketToServer(packet.getPacket());
     }
 
     @Override

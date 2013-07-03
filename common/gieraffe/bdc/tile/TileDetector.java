@@ -163,6 +163,15 @@ public class TileDetector extends TileEntity implements IInventory {
                 this.detectorItemStacks[b0] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
         }
     }
+	
+	/**
+	 * Packet handling
+	 */
+	
+	/** reciev package */
+	public void getPackage() {
+		
+	}
 }
 
 

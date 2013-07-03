@@ -3,6 +3,7 @@ package gieraffe.bdc;
 import gieraffe.bdc.block.BlockDetector;
 import gieraffe.bdc.gui.GuiHandler;
 import gieraffe.bdc.lib.BlockIDs;
+import gieraffe.bdc.lib.Channels;
 import gieraffe.bdc.lib.Reference;
 import gieraffe.bdc.network.PacketHandler;
 import gieraffe.bdc.tile.TileDetector;
@@ -25,7 +26,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION_NUMBER)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = {"BDC_Detector_C", "BDC_Detector_S"}, 
+@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = {Channels.CHANNEL_DETECTOR_CLIENT, Channels.CHANNEL_DETECTOR_SERVER}, 
 			packetHandler = PacketHandler.class)
 public class BasicDetectionCraft {
 	
