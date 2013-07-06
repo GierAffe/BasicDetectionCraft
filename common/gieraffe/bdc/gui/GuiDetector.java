@@ -1,6 +1,7 @@
 package gieraffe.bdc.gui;
 
 import gieraffe.bdc.container.ContainerDetector;
+import gieraffe.bdc.lib.BlockIDs;
 import gieraffe.bdc.lib.Channels;
 import gieraffe.bdc.lib.PackageData;
 import gieraffe.bdc.network.CreateBDCPackage;
@@ -19,6 +20,7 @@ public class GuiDetector extends GuiContainer {
 	
 	private TileDetector tileEntity;
 	private GuiTextField guitextfield;
+	private GuiButton powerbutton;
 	
 	private static final int GUI_X_SIZE = 255;
 	private static final int GUI_Y_SIZE = 200;
@@ -77,9 +79,9 @@ public class GuiDetector extends GuiContainer {
         //PacketDispatcher.sendPacketToServer(new Packet250CustomPayload(Channels.CHANNEL_DETECTOR_SERVER,  )); //send packet
     }
     
-    public void buttonPowerClicked(int ID) {
+    public void buttonPowerClicked(int buttonID) {
     	int[] data = { PackageData.BUTTON_DETECTOR_CLICKED };
-    	CreateBDCPackage packet = new CreateBDCPackage(Channels.CHANNEL_DETECTOR_SERVER, ID, this.tileEntity.xCoord, 
+    	CreateBDCPackage packet = new CreateBDCPackage(Channels.CHANNEL_DETECTOR_SERVER, BlockIDs.BLOCK_DETECTOR, buttonID, this.tileEntity.xCoord, 
     													this.tileEntity.yCoord, this.tileEntity.zCoord, data);
     	PacketDispatcher.sendPacketToServer(packet.getPacket());
     }
