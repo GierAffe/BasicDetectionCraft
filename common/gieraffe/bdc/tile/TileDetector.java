@@ -13,7 +13,17 @@ public class TileDetector extends TileEntity implements IInventory {
 	private ItemStack[] detectorItemStacks = new ItemStack[4];
 	
 	private String inventoryName;
+	
+	private boolean powerState = false;		// machine status, false for now
 	   
+	
+	public void buttonPowerSwitchClicked(int[] data) {
+		if (powerState)
+			powerState = false;
+		else
+			powerState = true;
+	}
+	
 	@Override
     public boolean isUseableByPlayer(EntityPlayer player) {
     	/** same as in minecraft source */
@@ -163,15 +173,6 @@ public class TileDetector extends TileEntity implements IInventory {
                 this.detectorItemStacks[b0] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
         }
     }
-	
-	/**
-	 * Packet handling
-	 */
-	
-	/** reciev package */
-	public void getPackage() {
-		
-	}
 }
 
 
