@@ -12,21 +12,22 @@ public class CreateBDCPackage {
 	/**
 	 * Standard package for player-server communication 
 	 * @param channel
-	 * @param ID button ID
+	 * @param blockID, buttonID
 	 * @param x, y, z world
 	 * @param data
 	 */
-	public CreateBDCPackage(String channel, int ID, int x, int y, int z, int[] data) {
+	public CreateBDCPackage(String channel, int blockID, int buttonID, int x, int y, int z, int[] data) {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
 		DataOutputStream outputStream = new DataOutputStream(bos);
 		
 				
 		try {			
 			// set meta
-			outputStream.writeInt(ID);
+			outputStream.writeInt(blockID);
 			outputStream.writeInt(x);
 			outputStream.writeInt(y);
 			outputStream.writeInt(z);
+			outputStream.writeInt(data.length);
 			
 			for (int i = 0; i < data.length; i++) {
 				outputStream.writeInt(data[i]);
