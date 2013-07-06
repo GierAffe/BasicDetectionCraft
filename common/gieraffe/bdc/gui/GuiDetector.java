@@ -3,8 +3,8 @@ package gieraffe.bdc.gui;
 import gieraffe.bdc.container.ContainerDetector;
 import gieraffe.bdc.lib.BlockIDs;
 import gieraffe.bdc.lib.Channels;
-import gieraffe.bdc.lib.PackageData;
-import gieraffe.bdc.network.CreateBDCPackage;
+import gieraffe.bdc.lib.PacketData;
+import gieraffe.bdc.network.CustomBDCPacket;
 import gieraffe.bdc.tile.TileDetector;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -15,7 +15,6 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 
-
 public class GuiDetector extends GuiContainer {
 	
 	private TileDetector tileEntity;
@@ -24,7 +23,11 @@ public class GuiDetector extends GuiContainer {
 	
 	private static final int GUI_X_SIZE = 255;
 	private static final int GUI_Y_SIZE = 200;
+	
+	public static final int BUTTON_POWER = 1;
 
+	
+	
     public GuiDetector (InventoryPlayer par1inventoryPlayer, TileDetector par2tileEntity) 
     {
         super(new ContainerDetector(par1inventoryPlayer, par2tileEntity));
@@ -32,6 +35,7 @@ public class GuiDetector extends GuiContainer {
         this.tileEntity = par2tileEntity;
     }
     
+    @Override
     @SuppressWarnings("unchecked")		//buttonList is a raw type
     public void initGui() {
     	/** set Gui size & initialize */
@@ -70,19 +74,17 @@ public class GuiDetector extends GuiContainer {
     @Override
     protected void actionPerformed(GuiButton button) {
     	switch(button.id) {
-        case 1:
-        	buttonPowerClicked(button.id);
+        case GuiDetector.BUTTON_POWER:
+        	buttonPowerClicked();
             break;
         case 2:
         }
-        //Packet code here
-        //PacketDispatcher.sendPacketToServer(new Packet250CustomPayload(Channels.CHANNEL_DETECTOR_SERVER,  )); //send packet
     }
     
-    public void buttonPowerClicked(int buttonID) {
-    	int[] data = { PackageData.BUTTON_DETECTOR_CLICKED };
-    	CreateBDCPackage packet = new CreateBDCPackage(Channels.CHANNEL_DETECTOR_SERVER, BlockIDs.BLOCK_DETECTOR, buttonID, this.tileEntity.xCoord, 
-    													this.tileEntity.yCoord, this.tileEntity.zCoord, data);
+    public void buttonPowerClicked() {
+    	int[] data = { PacketData.BUTTON_POWER_CLICKED };
+    	CustomBDCPacket packet = new CustomBDCPacket(Channels.CHANNEL_DETECTOR_SERVER, BlockIDs.BLOCK_DETECTOR,
+    													this.tileEntity.xCoord, this.tileEntity.yCoord, this.tileEntity.zCoord, data);
     	PacketDispatcher.sendPacketToServer(packet.getPacket());
     }
 
