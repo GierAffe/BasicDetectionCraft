@@ -39,6 +39,7 @@ public class ContainerDetector extends Container {
             return this.tiledetector.isUseableByPlayer(player);
     }
 
+    @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int i)
     {
         ItemStack itemstack = null;
