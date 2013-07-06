@@ -1,5 +1,10 @@
 package gieraffe.bdc.tile;
 
+import gieraffe.bdc.lib.BlockIDs;
+import gieraffe.bdc.lib.Channels;
+import gieraffe.bdc.lib.PacketData;
+import gieraffe.bdc.network.CustomBDCPacket;
+import cpw.mods.fml.common.network.PacketDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -17,11 +22,52 @@ public class TileDetector extends TileEntity implements IInventory {
 	private boolean powerState = false;		// machine status, false for now
 	   
 	
-	public void buttonPowerSwitchClicked(int[] data) {
-		if (powerState)
-			powerState = false;
-		else
-			powerState = true;
+	/**
+	 * handle button click, call corresponding method(s)
+	 * @param buttonID ID of the button that the player clicked
+	 * @param data message assigned to this action
+	 */
+	public void buttonClicked(int[] message) {
+
+		if (message.length < 1)
+			return;
+					
+		switch (message[0]) {
+		case (PacketData.BUTTON_POWER_CLICKED):
+			buttonPowerSwitchClicked();
+			break;
+		}
+	}
+	
+	public void buttonPowerSwitchClicked() {
+		/** check if all preconditions are met for turning on the machine */
+		// TODO: add stuff
+		
+		switchPowerState();
+	}
+	
+	/**
+	 * switches PowerState and notify client for graphical adjustments
+	 */
+	public void switchPowerState() {
+		int[] message = new int[2];
+		message[0] = PacketData.CHANGE_POWER_STATE;
+		
+		// do the 'ol switcheroo
+		if (this.powerState) {
+			this.powerState = false;
+			message[1] = PacketData.POWER_STATE_OFF;
+		}
+		else {
+			this.powerState = false;
+			message[1] = PacketData.POWER_STATE_ON;
+		}
+		
+		//create & send package to client
+    	CustomBDCPacket packet = new CustomBDCPacket(Channels.CHANNEL_DETECTOR_CLIENT, BlockIDs.BLOCK_DETECTOR, 
+    			 										this.xCoord, this.yCoord, this.zCoord, message);
+    	PacketDispatcher.sendPacketToServer(packet.getPacket());
+		
 	}
 	
 	@Override
@@ -149,6 +195,8 @@ public class TileDetector extends TileEntity implements IInventory {
 		}
 		
 	    nbt.setTag("Items", nbtTagList);
+	    
+	    nbt.setBoolean("PowerState", this.powerState);
 
 	    if (this.isInvNameLocalized())
 	        nbt.setString("CustomName", this.inventoryName);
@@ -163,6 +211,8 @@ public class TileDetector extends TileEntity implements IInventory {
 
         if (nbt.hasKey("CustomName"))
             this.inventoryName = nbt.getString("CustomName");
+        
+        this.powerState = nbt.getBoolean("PowerState");
 
         for (int i = 0; i < nbtTagList.tagCount(); ++i)
         {
