@@ -7,6 +7,7 @@ import gieraffe.bdc.tile.TileDetector;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.src.ModLoader;
@@ -25,40 +26,34 @@ public class PacketHandler implements IPacketHandler {
 			return;
 		
 		if (packet.channel == Channels.CHANNEL_DETECTOR_CLIENT)
-			handleClientPacket(manager, packet, player);
+			handleClientPacket(packet, player);
 		else if (packet.channel == Channels.CHANNEL_DETECTOR_SERVER)
-			handleServerPacket(manager, packet, player);
+			handleServerPacket(packet);
 		
 	}
-
-	private void handleClientPacket(INetworkManager manager, Packet250CustomPayload packet, Player player) {
-		ByteArrayDataInput data = ByteStreams.newDataInput(packet.data);
-		 
-        switch (data.readInt()) {
-        case 0:
-        	break;
-        }
+	
+	/**
+	 * Client side packet handling
+	 */
+	private void handleClientPacket(Packet250CustomPayload parPacket, Player parPlayer) {
+		CustomBDCPacket packet = new CustomBDCPacket(parPacket);
+		TileEntity tile = world.getBlockTileEntity(packet.x, packet.y, packet.z);
+		
+		if (packet.blockID == BlockIDs.BLOCK_DETECTOR) {
+			((EntityPlayer) parPlayer).get
+		}
         
 	}
 	
-	private void handleServerPacket (INetworkManager manager, Packet250CustomPayload packet, Player player) {
-		ByteArrayDataInput data = ByteStreams.newDataInput(packet.data);
+	/**
+	 * Server side packet handling
+	 */
+	private void handleServerPacket (Packet250CustomPayload parPacket) {
+		CustomBDCPacket packet = new CustomBDCPacket(parPacket);
+		TileEntity tile = world.getBlockTileEntity(packet.x, packet.y, packet.z);
 		
-		int[] values = new int[5];		// first 5 variables for identification
-		for (int i = 0; i < 5; i++) {
-			values[i] = data.readInt();
-		}
-		
-		// read out the message in the data
-		int[] message = new int[data.readInt()];
-		for (int i = 0; i < message.length; i++) {
-			message[0] = data.readInt();
-		}
-		
-		TileEntity tile = world.getBlockTileEntity(values[1], values[2], values[3]); 	//values = x,y,z
-		
-		if (values[0] == BlockIDs.BLOCK_DETECTOR) {										//value[0] = tile identification
-			((TileDetector) tile).buttonPowerSwitchClicked(message);
+		if (packet.blockID == BlockIDs.BLOCK_DETECTOR) {
+			((TileDetector) tile).buttonClicked(packet.message);
 		}
 	}
 }
