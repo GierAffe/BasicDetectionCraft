@@ -6,10 +6,8 @@ import gieraffe.bdc.lib.PacketData;
 import gieraffe.bdc.network.CustomBDCPacket;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -65,7 +63,7 @@ public class TileDetector extends TileEntity implements IInventory {
 			message[1] = PacketData.POWER_STATE_OFF;
 		}
 		else {
-			this.powerState = false;
+			this.powerState = true;
 			message[1] = PacketData.POWER_STATE_ON;
 		}
 		
@@ -73,7 +71,7 @@ public class TileDetector extends TileEntity implements IInventory {
 		//create & send package to client
     	CustomBDCPacket packet = new CustomBDCPacket(Channels.CHANNEL_DETECTOR_CLIENT, BlockIDs.BLOCK_DETECTOR, 
     			 										this.xCoord, this.yCoord, this.zCoord, message);
-    	PacketDispatcher.sendPacketToPlayer(packet.getPacket(), );
+    	PacketDispatcher.sendPacketToAllPlayers(packet.getPacket());
 
 	}
 	
