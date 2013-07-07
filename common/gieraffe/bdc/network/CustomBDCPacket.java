@@ -75,6 +75,9 @@ public class CustomBDCPacket {
 	public CustomBDCPacket(Packet250CustomPayload parPacket) {
 		this.packet = parPacket;
 		
+		// read out channel (for cosmetics)..
+		this.channel = parPacket.channel;
+		
 		// read out packet data
 		ByteArrayDataInput data = ByteStreams.newDataInput(this.packet.data);
 		
@@ -87,7 +90,7 @@ public class CustomBDCPacket {
 		// read out the message in the data
 		this.message = new int[messagelength];
 		for (int i = 0; i < messagelength; i++) {
-			message[0] = data.readInt();
+			message[i] = data.readInt();
 		}
 	}
 	
