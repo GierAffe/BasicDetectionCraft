@@ -48,7 +48,9 @@ public class GuiDetector extends GuiContainer {
         this.guitextfield.setMaxStringLength(70);
         
         /* buttons */
-        this.buttonList.add((Object)new GuiButton(1, this.guiLeft + 112, this.guiTop + 88, 36, 18, "Off"));
+        String PowerState = tileEntity.getPowerStateString();
+        this.powerbutton = new GuiButton(1, this.guiLeft + 112, this.guiTop + 88, 36, 18, PowerState);
+        this.buttonList.add(powerbutton);
     }
 
     @Override
@@ -81,11 +83,16 @@ public class GuiDetector extends GuiContainer {
         }
     }
     
+    /**
+     * sends a message to the server and updates button-text
+     */
     public void buttonPowerClicked() {
     	int[] data = { PacketData.BUTTON_POWER_CLICKED };
     	CustomBDCPacket packet = new CustomBDCPacket(Channels.CHANNEL_DETECTOR_SERVER, BlockIDs.BLOCK_DETECTOR,
     													this.tileEntity.xCoord, this.tileEntity.yCoord, this.tileEntity.zCoord, data);
     	PacketDispatcher.sendPacketToServer(packet.getPacket());
+    	this.powerbutton.displayString = tileEntity.getPowerStateString();
+    	this.powerbutton.drawButton(this.mc, 0, 0);
     }
 
     @Override

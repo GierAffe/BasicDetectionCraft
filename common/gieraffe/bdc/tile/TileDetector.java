@@ -85,6 +85,10 @@ public class TileDetector extends TileEntity implements IInventory {
 			this.powerState = state;		
 	}
 	
+	public String getPowerStateString() {
+		return this.powerState ? "On" : "Off";
+	}
+	
 	@Override
     public boolean isUseableByPlayer(EntityPlayer player) {
     	/** same as in minecraft source */
