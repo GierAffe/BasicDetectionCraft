@@ -32,18 +32,18 @@ public class PacketHandler implements IPacketHandler {
 		CustomBDCPacket packet = new CustomBDCPacket(parPacket);
 		
 		TileDetector tile = (TileDetector)ModLoader.getMinecraftInstance().theWorld.getBlockTileEntity(packet.x, packet.y, packet.z);
-		//TileEntity tile = world.getBlockTileEntity(packet.x, packet.y, packet.z);
 		
 		if (packet.blockID == BlockIDs.BLOCK_DETECTOR) {
-			if (packet.message[0] == PacketData.CHANGE_POWER_STATE) {
-				if (packet.message[1] == PacketData.POWER_STATE_ON) {
-					((TileDetector) tile).setPowerState(true);
-				} else if (packet.message[1] == PacketData.POWER_STATE_OFF) {
-					((TileDetector) tile).setPowerState(false);
-				}
+				
+			switch (packet.message[0]) {
+			case (PacketData.POWER_STATE_ON) : 
+				((TileDetector) tile).setPowerState(true);
+				break;
+			case (PacketData.POWER_STATE_OFF) :
+				((TileDetector) tile).setPowerState(false);
+				break;
 			}
 		}
-        
 	}
 	
 	/**

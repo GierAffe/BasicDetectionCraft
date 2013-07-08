@@ -1,12 +1,13 @@
 package gieraffe.bdc.tile;
 
+import gieraffe.bdc.gui.GuiDetector;
 import gieraffe.bdc.lib.BlockIDs;
 import gieraffe.bdc.lib.Channels;
 import gieraffe.bdc.lib.PacketData;
 import gieraffe.bdc.network.CustomBDCPacket;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -19,6 +20,8 @@ public class TileDetector extends TileEntity implements IInventory {
 
 	private ItemStack[] detectorItemStacks = new ItemStack[4];
 	
+	public GuiDetector gui;
+	
 	private String inventoryName;
 	
 	private boolean powerState = false;		// machine status, false for now
@@ -26,8 +29,7 @@ public class TileDetector extends TileEntity implements IInventory {
 	
 	/**
 	 * Handle button click, call corresponding method(s). Gets called from PacketHandler
-	 * @param buttonID ID of the button that the player clicked
-	 * @param data message assigned to this action
+	 * @param message message assigned to this action
 	 */
 	public void buttonClicked(int[] message) {
 
@@ -54,17 +56,16 @@ public class TileDetector extends TileEntity implements IInventory {
 	private void switchPowerState() {
 		
 		// create message that will be sent to the client, later add the state it has to switch to
-		int[] message = new int[2];
-		message[0] = PacketData.CHANGE_POWER_STATE;
+		int[] message = new int[1];
 		
 		// do the 'ol switcheroo
 		if (this.powerState) {
 			this.powerState = false;
-			message[1] = PacketData.POWER_STATE_OFF;
+			message[0] = PacketData.POWER_STATE_OFF;
 		}
 		else {
 			this.powerState = true;
-			message[1] = PacketData.POWER_STATE_ON;
+			message[0] = PacketData.POWER_STATE_ON;
 		}
 		
 		
@@ -79,16 +80,19 @@ public class TileDetector extends TileEntity implements IInventory {
 	 * Manual override Power State, used by PacketHandler.java. Works only on client side (only used for graphic display)
 	 * @param state new Power State
 	 */
+	@SideOnly(Side.CLIENT)
 	public void setPowerState(boolean state) {
-		Side side = FMLCommonHandler.instance().getEffectiveSide();
-		if (side == Side.CLIENT)
-			this.powerState = state;		
+		this.powerState = state;
+		
+		// refresh button caption
+		this.gui.updateButton(GuiDetector.BUTTON_POWER);
 	}
 	
 	public String getPowerStateString() {
 		return this.powerState ? "On" : "Off";
 	}
 	
+
 	@Override
     public boolean isUseableByPlayer(EntityPlayer player) {
     	/** same as in minecraft source */

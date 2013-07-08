@@ -19,12 +19,12 @@ public class GuiDetector extends GuiContainer {
 	
 	private TileDetector tileEntity;
 	private GuiTextField guitextfield;
-	private GuiButton powerbutton;
 	
 	private static final int GUI_X_SIZE = 255;
 	private static final int GUI_Y_SIZE = 200;
 	
-	public static final int BUTTON_POWER = 1;
+	// button id index
+	public static final int BUTTON_POWER = 0;
 
 	
 	
@@ -33,10 +33,14 @@ public class GuiDetector extends GuiContainer {
         super(new ContainerDetector(par1inventoryPlayer, par2tileEntity));
 
         this.tileEntity = par2tileEntity;
+        
+        // reference this in tile entity so the tile can update gui when data changed
+        this.tileEntity.gui = this;
     }
     
+    
     @Override
-    @SuppressWarnings("unchecked")		//buttonList is a raw type
+    @SuppressWarnings("unchecked")		// buttonList is a raw type
     public void initGui() {
     	/** set Gui size & initialize */
         this.xSize = GuiDetector.GUI_X_SIZE;
@@ -48,10 +52,20 @@ public class GuiDetector extends GuiContainer {
         this.guitextfield.setMaxStringLength(70);
         
         /* buttons */
-        String PowerState = tileEntity.getPowerStateString();
-        this.powerbutton = new GuiButton(1, this.guiLeft + 112, this.guiTop + 88, 36, 18, PowerState);
-        this.buttonList.add(powerbutton);
+        /* register so the button id == list index! */
+        this.buttonList.add(new GuiButton(GuiDetector.BUTTON_POWER, this.guiLeft + 112, this.guiTop + 88, 36, 18, tileEntity.getPowerStateString()));
     }
+    
+    
+	/**
+	 * Called after label update eg. by packet handler
+	 */
+	public void updateButton(int i) {
+		// refresh button label
+    	((GuiButton)this.buttonList.get(i)).displayString = tileEntity.getPowerStateString();
+    	((GuiButton)this.buttonList.get(i)).drawButton(this.mc, 0, 0);
+	}
+    
 
     @Override
     public void drawScreen(int par1, int par2, float par3) {
@@ -91,8 +105,6 @@ public class GuiDetector extends GuiContainer {
     	CustomBDCPacket packet = new CustomBDCPacket(Channels.CHANNEL_DETECTOR_SERVER, BlockIDs.BLOCK_DETECTOR,
     													this.tileEntity.xCoord, this.tileEntity.yCoord, this.tileEntity.zCoord, data);
     	PacketDispatcher.sendPacketToServer(packet.getPacket());
-    	this.powerbutton.displayString = tileEntity.getPowerStateString();
-    	this.powerbutton.drawButton(this.mc, 0, 0);
     }
 
     @Override
